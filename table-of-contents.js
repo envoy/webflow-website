@@ -32,11 +32,11 @@ document.addEventListener("DOMContentLoaded", function () {
     tocContainer.appendChild(link);
 
     // Add a divider after each link, except for the last one
-    if (index < headers.length - 1) {
-      const divider = document.createElement("div");
-      divider.className = "dynamic-page-toc-divider";
-      tocContainer.appendChild(divider);
-    }
+    // if (index < headers.length - 1) {
+    //   const divider = document.createElement("div");
+    //   divider.className = "dynamic-page-toc-divider";
+    //   tocContainer.appendChild(divider);
+    // }
   });
 
   if (headers.length === 0) {
