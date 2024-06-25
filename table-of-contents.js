@@ -1,13 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
   const headers = document.querySelectorAll(".text-rich-text h2");
   const tocContainer = document.querySelector(".dynamic-page-toc-container");
+  const tocComponent = document.querySelector(".sidebar_toc_component");
 
   if (!tocContainer) {
     console.error("Table of contents container not found");
     return;
   }
 
+  if (!tocComponent) {
+    console.error("Table of contents component not found");
+    return;
+  }
+
   tocContainer.innerHTML = "";
+
   const ids = {};
 
   headers.forEach(function (header, index) {
@@ -45,10 +52,5 @@ document.addEventListener("DOMContentLoaded", function () {
     // }
   });
 
-  if (headers.length === 0) {
-    const component = document.querySelector(".sidebar_toc_component");
-    if (component) {
-      component.style.display = "none";
-    }
-  }
+  tocComponent.style.display = "block";
 });
