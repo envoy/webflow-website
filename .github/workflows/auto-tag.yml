@@ -19,11 +19,15 @@ jobs:
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
           echo $NEW_VERSION > .version
 
-      - name: Commit and Tag New Version
+      - name: Commit and Push Changes
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
           git add .version
           git commit -m "Increment version to ${{ env.NEW_VERSION }}"
+          git push origin main
+
+      - name: Tag New Version and Push Tag
+        run: |
           git tag ${{ env.NEW_VERSION }}
-          git push --follow-tags
+          git push origin tag ${{ env.NEW_VERSION }}
