@@ -1,6 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
   const headers = document.querySelectorAll(".text-rich-text h2");
   const tocContainer = document.querySelector(".dynamic-page-toc-container");
+
+  if (!tocContainer) {
+    console.error("Table of contents container not found");
+    return;
+  }
+
   tocContainer.innerHTML = "";
   const ids = {};
 
@@ -40,6 +46,9 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   if (headers.length === 0) {
-    tocContainer.remove();
+    const component = document.querySelector(".sidebar_toc_component");
+    if (component) {
+      component.style.display = "none";
+    }
   }
 });
