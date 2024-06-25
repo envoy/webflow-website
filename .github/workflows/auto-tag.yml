@@ -1,0 +1,34 @@
+name: Auto Increment Version
+
+on:
+  push:
+    branches:
+      - main # Adjust this as necessary for your repository's branch name
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Important to fetch all history for version calculations
+
+      - name: Read the current version
+        id: version_reader
+        run: echo "::set-output name=version::$(cat .version)"
+
+      - name: Increment version
+        id: version_increment
+        run: |
+          echo $(( ${{ steps.version_reader.outputs.version }} + 1 )) > .version
+          echo "::set-output name=new_version::$(cat .version)"
+
+      - name: Commit and Tag New Version
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add .version
+          git commit -m "Increment version to ${{ steps.version_increment.outputs.new_version }}"
+          git tag ${{ steps.version_increment.outputs.new_version }}
+          git push --follow-tags
