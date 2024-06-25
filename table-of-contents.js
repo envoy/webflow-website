@@ -1,4 +1,8 @@
+import gsap from "https://cdn.skypack.dev/gsap";
+import { ScrollTrigger } from "https://cdn.skypack.dev/gsap/ScrollTrigger";
+
 document.addEventListener("DOMContentLoaded", function () {
+  gsap.registerPlugin(ScrollTrigger);
   const headers = document.querySelectorAll(".text-rich-text h2");
   const tocContainer = document.querySelector(".dynamic-page-toc-container");
   const tocComponent = document.querySelector(".sidebar_toc_component");
@@ -13,22 +17,26 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  // Clear placeholder content
   tocContainer.innerHTML = "";
 
   const ids = {};
 
+  // Create the table of contents elements and append them to the container
   headers.forEach(function (header, index) {
     let baseId = header.textContent
       .trim()
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
-    let id = baseId;
+
+    // Ensure the ID starts with a letter or underscore
+    let id = `section-${baseId}`; // Example prefix to ensure valid ID
     let count = 1;
 
     // Ensure the ID is unique
     while (ids[id]) {
-      id = `${baseId}${count}`;
+      id = `section-${baseId}-${count}`;
       count++;
     }
     ids[id] = true;
@@ -44,13 +52,75 @@ document.addEventListener("DOMContentLoaded", function () {
 
     tocContainer.appendChild(link);
 
-    // Add a divider after each link, except for the last one
-    // if (index < headers.length - 1) {
-    //   const divider = document.createElement("div");
-    //   divider.className = "dynamic-page-toc-divider";
-    //   tocContainer.appendChild(divider);
-    // }
+    // Handle click event on TOC link
+    link.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent default anchor behavior
+      scrollToHeader(id); // Scroll to the corresponding header
+    });
   });
 
-  tocComponent.style.display = "block";
+  // Function to scroll to a specific header by ID
+  function scrollToHeader(id) {
+    const header = document.getElementById(id);
+    if (header) {
+      header.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      // Update active link in TOC
+      updateActiveLink(id);
+    }
+  }
+
+  // Update active link in TOC based on current scroll position
+  function updateActiveHeader() {
+    let currentActiveHeader = null;
+    headers.forEach(function (header) {
+      const bounding = header.getBoundingClientRect();
+      if (
+        bounding.top <= 100 && // Adjust this value as needed
+        bounding.bottom >= 100 && // Adjust this value as needed
+        (currentActiveHeader === null ||
+          bounding.top < currentActiveHeader.getBoundingClientRect().top)
+      ) {
+        currentActiveHeader = header;
+      }
+    });
+
+    if (currentActiveHeader) {
+      const id = currentActiveHeader.id;
+      updateActiveLink(id);
+    }
+  }
+
+  // Function to update active link in TOC
+  function updateActiveLink(id) {
+    const activeLink = tocContainer.querySelector(".dynamic-toc-link.active");
+    if (activeLink) {
+      activeLink.classList.remove("active");
+    }
+    const currentLink = tocContainer.querySelector(`a[href="#${id}"]`);
+    if (currentLink) {
+      currentLink.classList.add("active");
+    }
+  }
+
+  // Add ScrollTrigger to monitor visibility and update active link
+  headers.forEach(function (header) {
+    ScrollTrigger.create({
+      trigger: header,
+      start: "top 20%", // Adjust start position as needed
+      end: "bottom top", // Adjust end position as needed
+      onToggle: (self) => {
+        if (self.isActive) {
+          updateActiveLink(header.id);
+        }
+      },
+    });
+  });
+
+  // Set initial active link based on current scroll position
+  updateActiveHeader();
+
+  if (headers.length > 0) {
+    tocComponent.style.display = "block";
+  }
 });
