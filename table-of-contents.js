@@ -2,6 +2,20 @@ import gsap from "https://cdn.skypack.dev/gsap";
 import { ScrollTrigger } from "https://cdn.skypack.dev/gsap/ScrollTrigger";
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Handle window resize event
+  window.addEventListener("resize", function () {
+    // Check if the viewport width is greater than 991px (desktop breakpoint)
+    initializeTableOfContents();
+  });
+
+  initializeTableOfContents();
+});
+
+function initializeTableOfContents() {
+  if (window.innerWidth < 991) {
+    return;
+  }
+
   gsap.registerPlugin(ScrollTrigger);
   const headers = document.querySelectorAll(".text-rich-text h2");
   const tocContainer = document.querySelector(".dynamic-page-toc-container");
@@ -59,6 +73,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // Set initial active link based on current scroll position
+  updateActiveHeader();
+
   // Function to scroll to a specific header by ID
   function scrollToHeader(id) {
     const header = document.getElementById(id);
@@ -70,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Update active link in TOC based on current scroll position
+  // Function to update active link in TOC based on current scroll position
   function updateActiveHeader() {
     let currentActiveHeader = null;
     headers.forEach(function (header) {
@@ -88,6 +105,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (currentActiveHeader) {
       const id = currentActiveHeader.id;
       updateActiveLink(id);
+    } else {
+      // If no headers are active, set the first link as active
+      if (headers.length > 0 && window.scrollY < 100) {
+        const firstHeaderId = headers[0].id;
+        updateActiveLink(firstHeaderId);
+      }
     }
   }
 
@@ -117,10 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Set initial active link based on current scroll position
-  updateActiveHeader();
-
   if (headers.length > 0) {
     tocComponent.style.display = "block";
   }
-});
+}
