@@ -1,3 +1,16 @@
+# This GitHub Action workflow automates the process of incrementing a version number stored in a .version file
+# every time a push is made to the main branch. It performs the following steps:
+# 1. Checks out the repository code.
+# 2. Reads the current version from the .version file and increments it.
+# 3. Commits the updated .version file back to the main branch.
+# 4. Creates a new git tag with the incremented version number.
+# 5. Pushes the new tag to the remote repository.
+
+# To deploy a new version of code all you have to do is push to the main branch.
+# The version number will be incremented and a new tag will be created and pushed to the remote repository.
+# Then, in GitHub Releases, you can create a new release based on the tag that was just created.
+# Finally, update the CDN script (jsDelivr) to point to the new version number.
+
 name: Auto Increment Version
 
 on:
