@@ -20,118 +20,103 @@ const marketoFormIndex = 0;
 let marketoFormLoading = false;
 
 function loadMarketoForm(form) {
-  /**
-   * To prevent ID conflicts, we only load 1 form at a time. I used setTimeout and
-   * a semaphore(?) variable to only have 1 form load at a time. This could probably
-   * be done a better way (Promises?) but given my limited understanding of advanced AJAX
-   * + Marketo's library, I went with a simple setTimeout retry.
-   */
-  if (marketoFormLoading) {
-    setTimeout(function () {
-      loadMarketoForm(form);
-    }, 200);
-  } else {
-    marketoFormLoading = true;
-    const $form = $(form),
-      formId = $form.data("marketo-form-id"),
-      index = marketoFormIndex;
-    $form.attr("id", "mktoForm_" + formId);
-    if ($form.hasClass("email-only") && typeof MktoForms2 === "undefined") {
-      $form.attr("action", "https://signup.envoy.com");
-      $form.attr("method", "get");
-      $form.append(
-        '<div class="form-html-version"><div class="col xs-col-12 sm-col-12 md-col-7 md-pr2 mb2"><input name="email" type="email" placeholder="Enter your email" class="input"></div><div class="col xs-col-12 sm-col-12 md-col-5"><button class="btn btn-primary block">Get started</button></div></div>'
-      );
-      marketoFormLoading = false;
-      return;
-    }
-    // wait for MktoForms2 to be defined
-    if (typeof MktoForms2 === "undefined") {
-      setTimeout(function () {
-        loadMarketoForm(form);
-      }, 200);
-      return;
-    }
-    MktoForms2.setOptions({
-      formXDPath: "/rs/510-TEH-674/images/marketo-xdframe-relative.html",
-    });
-    MktoForms2.loadForm(
-      "//pages.envoy.com",
-      "510-TEH-674",
-      formId,
-      function (form) {
-        $form.find(".form-html-version").remove();
-        // Marketo sets all field IDs + label `for` attributes to the same/colliding values
-        // This loops through and gives each field + label a unique ID, to allow inputs to be selected on label click
-        $form.find("label[for]").each(function () {
-          const $label = $(this),
-            oldId = $label.attr("for"),
-            newId = oldId + "_" + index;
-          $form.find("#" + oldId).attr("id", newId);
-          $label.attr("for", newId);
-        });
-        // Give the form a unique ID, based on the order it is loaded
-        $form.attr("id", "marketo-form-" + index);
-        if ($form.data("button-text")) {
-          $form.find(".mktoButton").text($form.data("button-text"));
-        }
-        const $emailInput = $form.find('input[name="Email"]');
-        if ($emailInput.length > 0) {
-          // Add a class to designate the email row - used for styling
-          $emailInput.closest(".mktoFormRow").addClass("contains-email");
-          // Add a tooltip used by NeverBounce to display invalid email warnings
-          const $tooltip = $(
-            '<div class="input-tooltip"><div class="top"><p class="input-tooltip-content mb0">Please enter a valid email address.</p><i></i></div></div>'
-          );
-          $tooltip.insertBefore($emailInput);
-        }
-        const submitCallbackName = $form.data("submit-callback");
-
-        form.onSubmit(function (form) {
-          // Segement
-          window.analytics &&
-            analytics.track("Form Filled", {
+  return new Promise((resolve, reject) => {
+    if (marketoFormLoading) {
+      setTimeout(() => resolve(loadMarketoForm(form)), 200);
+    } else {
+      marketoFormLoading = true;
+      const $form = $(form),
+        formId = $form.data("marketo-form-id"),
+        index = marketoFormIndex;
+      $form.attr("id", "mktoForm_" + formId);
+      if ($form.hasClass("email-only") && typeof MktoForms2 === "undefined") {
+        $form.attr("action", "https://signup.envoy.com");
+        $form.attr("method", "get");
+        $form.append(
+          '<div class="form-html-version"><div class="col xs-col-12 sm-col-12 md-col-7 md-pr2 mb2"><input name="email" type="email" placeholder="Enter your email" class="input"></div><div class="col xs-col-12 sm-col-12 md-col-5"><button class="btn btn-primary block">Get started</button></div></div>'
+        );
+        marketoFormLoading = false;
+        return;
+      }
+      if (typeof MktoForms2 === "undefined") {
+        setTimeout(() => resolve(loadMarketoForm(form)), 200);
+        return;
+      }
+      MktoForms2.setOptions({
+        formXDPath: "/rs/510-TEH-674/images/marketo-xdframe-relative.html",
+      });
+      MktoForms2.loadForm(
+        "//pages.envoy.com",
+        "510-TEH-674",
+        formId,
+        function (form) {
+          $form.find(".form-html-version").remove();
+          $form.find("label[for]").each(function () {
+            const $label = $(this),
+              oldId = $label.attr("for"),
+              newId = oldId + "_" + index;
+            $form.find("#" + oldId).attr("id", newId);
+            $label.attr("for", newId);
+          });
+          $form.attr("id", "marketo-form-" + index);
+          if ($form.data("button-text")) {
+            $form.find(".mktoButton").text($form.data("button-text"));
+          }
+          const $emailInput = $form.find('input[name="Email"]');
+          if ($emailInput.length > 0) {
+            $emailInput.closest(".mktoFormRow").addClass("contains-email");
+            const $tooltip = $(
+              '<div class="input-tooltip"><div class="top"><p class="input-tooltip-content mb0">Please enter a valid email address.</p><i></i></div></div>'
+            );
+            $tooltip.insertBefore($emailInput);
+          }
+          const submitCallbackName = $form.data("submit-callback");
+          form.onSubmit(function (form) {
+            window.analytics &&
+              analytics.track("Form Filled", {
+                formID: formId,
+                emailAddress: form.vals().Email,
+              });
+            window.dataLayer.push({
+              event: "formSubmit",
               formID: formId,
               emailAddress: form.vals().Email,
             });
-
-          // No Segment
-          window.dataLayer.push({
-            event: "formSubmit",
-            formID: formId,
-            emailAddress: form.vals().Email,
+            if (submitCallbackName) {
+              return window[submitCallbackName](form);
+            }
           });
-
-          if (submitCallbackName) {
-            return window[submitCallbackName](form);
+          const successCallbackName = $form.data("success-callback");
+          if (typeof successCallbackName !== "undefined") {
+            form.onSuccess(function (values, followUpUrl) {
+              return window[successCallbackName](values, followUpUrl, $form);
+            });
           }
-        });
-
-        const successCallbackName = $form.data("success-callback");
-        if (typeof successCallbackName !== "undefined") {
-          form.onSuccess(function (values, followUpUrl) {
-            return window[successCallbackName](values, followUpUrl, $form);
-          });
+          const onloadCallbackName = $form.data("onload-callback");
+          if (typeof onloadCallbackName !== "undefined") {
+            window[onloadCallbackName]($form);
+          }
+          if ($form.data("load-from-parameters")) {
+            $form
+              .find('input[name="Email"]')
+              .val(marketoGetQueryParameter("email"));
+          }
+          $form.removeAttr("data-marketo-form-id");
+          marketoFormLoading = false;
+          resolve();
         }
-        const onloadCallbackName = $form.data("onload-callback");
-        if (typeof onloadCallbackName !== "undefined") {
-          window[onloadCallbackName]($form);
-        }
-        if ($form.data("load-from-parameters")) {
-          $form
-            .find('input[name="Email"]')
-            .val(marketoGetQueryParameter("email"));
-        }
-        $form.removeAttr("data-marketo-form-id");
-        window.marketoFormLoading = false;
-      }
-    );
-  }
+      );
+    }
+  });
 }
 
 $(function () {
+  const formPromises = [];
   $("form[data-marketo-form-id]").each(function () {
-    loadMarketoForm($(this));
+    formPromises.push(loadMarketoForm($(this)));
+  });
+  Promise.all(formPromises).then(() => {
+    console.log("All forms loaded");
   });
 });
 
