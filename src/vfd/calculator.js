@@ -1,36 +1,27 @@
 const numLocationsInput = document.querySelector("#num-locations");
 const staffPerLocationInput = document.querySelector("#staff-per-location");
-const hourlyRateInput = document.querySelector("#hourly-rate");
+const hourlyRateInput = document.querySelector("#hourly-rate"); // plain
 const workDaysInAWeekInput = document.querySelector("#work-days-in-a-week");
 const workHoursPerDayInput = document.querySelector("#work-hours-per-day");
 const costSavingsPerMonthInput = document.querySelector(
   "#cost-savings-per-month"
 );
 
-console.log({
-  numLocationsInput,
-  staffPerLocationInput,
-  hourlyRateInput,
-  workDaysInAWeekInput,
-  workHoursPerDayInput,
-  costSavingsPerMonthInput,
-});
-
 const initialValues = {
-  numLocations: 1,
-  staffPerLocation: 1,
-  hourlyRate: 20,
+  numLocations: 3,
+  staffPerLocation: 2,
+  hourlyRate: 30,
   workDaysInAWeek: 5,
   workHoursPerDay: 8,
 };
+
+const weeksInAMonth = 4.2857;
 
 // multiply all the initial values together
 let costSavingsPerMonth = Object.values(initialValues).reduce(
   (acc, val) => acc * val,
   1
 );
-
-console.log({ costSavingsPerMonth });
 
 function init() {
   numLocationsInput.value = initialValues.numLocations;
@@ -39,14 +30,16 @@ function init() {
   workDaysInAWeekInput.value = initialValues.workDaysInAWeek;
   workHoursPerDayInput.value = initialValues.workHoursPerDay;
 
-  costSavingsPerMonthInput.value = formatCurrency(costSavingsPerMonth);
+  calculate({ target: costSavingsPerMonthInput });
 }
 init();
 
-function calculate() {
+function calculate(event) {
+  event.target.classList.remove("initial-font-color");
+
   const numLocations = parseInt(numLocationsInput.value);
   const staffPerLocation = parseInt(staffPerLocationInput.value);
-  const hourlyRate = parseFloat(hourlyRateInput.value);
+  const hourlyRate = parseInt(hourlyRateInput.value);
   const workDaysInAWeek = parseInt(workDaysInAWeekInput.value);
   const workHoursPerDay = parseInt(workHoursPerDayInput.value);
 
@@ -55,7 +48,8 @@ function calculate() {
     staffPerLocation *
     hourlyRate *
     workDaysInAWeek *
-    workHoursPerDay;
+    workHoursPerDay *
+    weeksInAMonth;
 
   costSavingsPerMonthInput.value = formatCurrency(costSavingsPerMonth);
 }
@@ -64,6 +58,8 @@ function formatCurrency(value) {
   return value.toLocaleString("en-US", {
     style: "currency",
     currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   });
 }
 
