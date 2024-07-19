@@ -1,6 +1,6 @@
 const numLocationsInput = document.querySelector("#num-locations");
 const staffPerLocationInput = document.querySelector("#staff-per-location");
-const hourlyRateInput = document.querySelector("#hourly-rate"); // plain
+// const hourlyRateInput = document.querySelector("#hourly-rate"); // plain
 const workDaysInAWeekInput = document.querySelector("#work-days-in-a-week");
 const workHoursPerDayInput = document.querySelector("#work-hours-per-day");
 const costSavingsPerMonthInput = document.querySelector(
@@ -10,7 +10,7 @@ const costSavingsPerMonthInput = document.querySelector(
 const initialValues = {
   numLocations: 3,
   staffPerLocation: 2,
-  hourlyRate: 30,
+  // hourlyRate: 30,
   workDaysInAWeek: 5,
   workHoursPerDay: 8,
 };
@@ -26,7 +26,7 @@ let costSavingsPerMonth = Object.values(initialValues).reduce(
 function init() {
   numLocationsInput.value = initialValues.numLocations;
   staffPerLocationInput.value = initialValues.staffPerLocation;
-  hourlyRateInput.value = initialValues.hourlyRate;
+  // hourlyRateInput.value = initialValues.hourlyRate;
   workDaysInAWeekInput.value = initialValues.workDaysInAWeek;
   workHoursPerDayInput.value = initialValues.workHoursPerDay;
 
@@ -39,32 +39,32 @@ function calculate(event) {
 
   const numLocations = parseInt(numLocationsInput.value);
   const staffPerLocation = parseInt(staffPerLocationInput.value);
-  const hourlyRate = parseInt(hourlyRateInput.value);
+  // const hourlyRate = parseInt(hourlyRateInput.value);
   const workDaysInAWeek = parseInt(workDaysInAWeekInput.value);
   const workHoursPerDay = parseInt(workHoursPerDayInput.value);
 
   const costSavingsPerMonth =
     numLocations *
     staffPerLocation *
-    hourlyRate *
+    // hourlyRate *
     workDaysInAWeek *
     workHoursPerDay *
     weeksInAMonth;
 
-  costSavingsPerMonthInput.value = formatCurrency(costSavingsPerMonth);
+  costSavingsPerMonthInput.value = costSavingsPerMonth.toFixed(1);
 }
 
-function formatCurrency(value) {
-  return value.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  });
-}
+// function formatCurrency(value) {
+//   return value.toLocaleString("en-US", {
+//     style: "currency",
+//     currency: "USD",
+//     minimumFractionDigits: 0,
+//     maximumFractionDigits: 0,
+//   });
+// }
 
 numLocationsInput.addEventListener("input", calculate);
 staffPerLocationInput.addEventListener("input", calculate);
-hourlyRateInput.addEventListener("input", calculate);
+// hourlyRateInput.addEventListener("input", calculate);
 workDaysInAWeekInput.addEventListener("input", calculate);
 workHoursPerDayInput.addEventListener("input", calculate);
