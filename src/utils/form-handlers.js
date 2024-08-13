@@ -94,6 +94,7 @@ function loadMarketoForm(form) {
           }
           const onloadCallbackName = $form.data("onload-callback");
           if (typeof onloadCallbackName !== "undefined") {
+            console.log({ onloadCallbackName, formId });
             window[onloadCallbackName]($form);
           }
           if ($form.data("load-from-parameters")) {
