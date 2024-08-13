@@ -27,6 +27,7 @@ function loadMarketoForm(form) {
       marketoFormLoading = true;
       const $form = $(form),
         formId = $form.data("marketo-form-id"),
+        formType = $form.data("form-type"),
         index = marketoFormIndex;
       $form.attr("id", "mktoForm_" + formId);
       if ($form.hasClass("email-only") && typeof MktoForms2 === "undefined") {
@@ -75,11 +76,13 @@ function loadMarketoForm(form) {
             window.analytics &&
               analytics.track("Form Filled", {
                 formID: formId,
+                formType: formType,
                 emailAddress: form.vals().Email,
               });
             window.dataLayer.push({
               event: "formSubmit",
               formID: formId,
+              formType: formType,
               emailAddress: form.vals().Email,
             });
             if (submitCallbackName) {
