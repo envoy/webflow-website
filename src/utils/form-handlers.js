@@ -85,6 +85,7 @@ function loadMarketoForm(form) {
               formType: formType,
               emailAddress: form.vals().Email,
             });
+            console.log("Form submitted", formId, formType);
             if (submitCallbackName) {
               return window[submitCallbackName](form);
             }
