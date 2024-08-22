@@ -108,7 +108,7 @@ function loadMarketoForm(form) {
             window.analytics &&
               analytics.track("Form Filled", {
                 formID: formId,
-                formType: formType,
+                formType: FORM_ID_TYPE_MAP[formId] || FORM_TYPES.NO_FORM_TYPE,
                 emailAddress: form.vals().Email,
               });
             window.dataLayer.push({
@@ -117,7 +117,6 @@ function loadMarketoForm(form) {
               formType: FORM_ID_TYPE_MAP[formId] || FORM_TYPES.NO_FORM_TYPE,
               emailAddress: form.vals().Email,
             });
-            console.log("Form submitted", formId, formType);
             if (submitCallbackName) {
               return window[submitCallbackName](form);
             }
