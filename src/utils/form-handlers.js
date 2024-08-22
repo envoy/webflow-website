@@ -59,7 +59,6 @@ function loadMarketoForm(form) {
       marketoFormLoading = true;
       const $form = $(form),
         formId = $form.data("marketo-form-id"),
-        // formType = $form.data("form-type"),
         index = marketoFormIndex;
       $form.attr("id", "mktoForm_" + formId);
       if ($form.hasClass("email-only") && typeof MktoForms2 === "undefined") {
