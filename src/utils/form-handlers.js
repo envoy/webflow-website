@@ -19,6 +19,38 @@
 const marketoFormIndex = 0;
 let marketoFormLoading = false;
 
+const EVENT_NAME = "generate_lead";
+const FORM_TYPES = {
+  GET_DEMO: "get_demo",
+  GET_QUOTE: "get_quote",
+  GET_TRIAL: "get_trial",
+  CONTACT_US: "contact_us",
+  GATED_ASSET: "gated_asset",
+  EVENTS: "events",
+  BETA_SIGNUP: "beta_signup",
+  NO_FORM_TYPE: "no_form_type",
+};
+
+const FORM_ID_TYPE_MAP = {
+  1: FORM_TYPES.NO_FORM_TYPE,
+  3: FORM_TYPES.GATED_ASSET,
+  40: FORM_TYPES.GET_TRIAL,
+  95: FORM_TYPES.EVENTS,
+  123: FORM_TYPES.GATED_ASSET,
+  223: FORM_TYPES.GATED_ASSET,
+  438: FORM_TYPES.GATED_ASSET,
+  255: FORM_TYPES.GET_QUOTE,
+  316: FORM_TYPES.CONTACT_US,
+  340: FORM_TYPES.GET_DEMO,
+  413: FORM_TYPES.CONTACT_US,
+  478: FORM_TYPES.EVENTS,
+  483: FORM_TYPES.GATED_ASSET,
+  488: FORM_TYPES.GATED_ASSET,
+  505: FORM_TYPES.EVENTS,
+  510: FORM_TYPES.GET_DEMO,
+  521: FORM_TYPES.BETA_SIGNUP,
+};
+
 function loadMarketoForm(form) {
   return new Promise((resolve, reject) => {
     if (marketoFormLoading) {
@@ -27,7 +59,7 @@ function loadMarketoForm(form) {
       marketoFormLoading = true;
       const $form = $(form),
         formId = $form.data("marketo-form-id"),
-        formType = $form.data("form-type"),
+        // formType = $form.data("form-type"),
         index = marketoFormIndex;
       $form.attr("id", "mktoForm_" + formId);
       if ($form.hasClass("email-only") && typeof MktoForms2 === "undefined") {
@@ -79,10 +111,11 @@ function loadMarketoForm(form) {
                 formType: formType,
                 emailAddress: form.vals().Email,
               });
+
             window.dataLayer.push({
-              event: "formSubmit",
+              event: EVENT_NAME,
               formID: formId,
-              formType: formType,
+              formType: FORM_ID_TYPE_MAP[formId] || FORM_TYPES.NO_FORM_TYPE,
               emailAddress: form.vals().Email,
             });
             console.log("Form submitted", formId, formType);
