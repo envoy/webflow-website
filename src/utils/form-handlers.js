@@ -19,6 +19,7 @@
 const marketoFormIndex = 0;
 let marketoFormLoading = false;
 
+// For Event Tracking
 const EVENT_NAME = "generate_lead";
 const FORM_TYPES = {
   GET_DEMO: "get_demo",
@@ -30,7 +31,6 @@ const FORM_TYPES = {
   BETA_SIGNUP: "beta_signup",
   NO_FORM_TYPE: "no_form_type",
 };
-
 const FORM_ID_TYPE_MAP = {
   1: FORM_TYPES.NO_FORM_TYPE,
   3: FORM_TYPES.GATED_ASSET,
@@ -111,7 +111,6 @@ function loadMarketoForm(form) {
                 formType: formType,
                 emailAddress: form.vals().Email,
               });
-
             window.dataLayer.push({
               event: EVENT_NAME,
               formID: formId,
