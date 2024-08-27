@@ -107,13 +107,13 @@ function loadMarketoForm(form) {
             window.analytics &&
               analytics.track("Form Filled", {
                 formID: formId,
-                formType: FORM_ID_TYPE_MAP[formId] || FORM_TYPES.NO_FORM_TYPE,
+                form_type: FORM_ID_TYPE_MAP[formId] || FORM_TYPES.NO_FORM_TYPE,
                 emailAddress: form.vals().Email,
               });
             window.dataLayer.push({
               event: EVENT_NAME,
               formID: formId,
-              formType: FORM_ID_TYPE_MAP[formId] || FORM_TYPES.NO_FORM_TYPE,
+              form_type: FORM_ID_TYPE_MAP[formId] || FORM_TYPES.NO_FORM_TYPE,
               emailAddress: form.vals().Email,
             });
             if (submitCallbackName) {
