@@ -12,6 +12,8 @@ const touchpoints = document.querySelectorAll(SELECTORS.touchpoint);
 const modals = document.querySelectorAll(SELECTORS.modal);
 const modalCloseEls = document.querySelectorAll(SELECTORS.modalClose);
 
+console.log({ touchpoints, modals, modalCloseEls });
+
 let activeIndex = 0;
 let autoplayInterval;
 let isAutoplaying = true;
@@ -25,10 +27,10 @@ function showActiveCard(index) {
     const base = touchpoint.querySelector(SELECTORS.touchpointBase);
 
     if (i === index) {
-      card.classList.remove("hide");
+      card.classList.remove("interactive_hide");
       base.classList.add("is-active");
     } else {
-      card.classList.add("hide");
+      card.classList.add("interactive_hide");
       base.classList.remove("is-active");
     }
   });
@@ -90,6 +92,7 @@ touchpoints.forEach((touchpoint, index) => {
     SELECTORS.viewSolutionButton
   );
   const clickedIndex = parseInt(viewSolutionButton.getAttribute("solution-el"));
+  console.log({ clickedIndex });
   const matchingModal = modals[clickedIndex];
   const closeEl = modalCloseEls[clickedIndex];
   const closeButton = matchingModal.querySelector(SELECTORS.modalCloseButton);
@@ -127,7 +130,7 @@ touchpoints.forEach((touchpoint, index) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault(); // Prevent default behavior like scrolling
       previouslyFocusedElement = document.activeElement;
-      matchingModal.classList.remove("hide");
+      matchingModal.classList.remove("interactive_hide");
       isModalOpen = true;
       stopAutoplay();
       trapFocus(matchingModal); // Trap focus inside the modal
@@ -138,7 +141,7 @@ touchpoints.forEach((touchpoint, index) => {
 
   viewSolutionButton.addEventListener("click", () => {
     previouslyFocusedElement = document.activeElement;
-    matchingModal.classList.remove("hide");
+    matchingModal.classList.remove("interactive_hide");
     isModalOpen = true;
     stopAutoplay();
     trapFocus(matchingModal); // Trap focus inside the modal
@@ -146,18 +149,22 @@ touchpoints.forEach((touchpoint, index) => {
     document.body.style.overflow = "hidden";
   });
 
-  closeEl.addEventListener("click", () => {
-    matchingModal.classList.add("hide");
-    isModalOpen = false;
-    startAutoplay();
-    isAutoplaying = true;
-    previouslyFocusedElement.focus(); // Return focus to the element that triggered the modal
-    // allow body to scroll
-    document.body.style.overflow = "auto";
+  // Add click event listener to the modal wrap
+  matchingModal.addEventListener("click", (event) => {
+    // Check if the click target is the background element (closeEl)
+    if (event.target.matches(SELECTORS.modalClose)) {
+      matchingModal.classList.add("interactive_hide");
+      isModalOpen = false;
+      startAutoplay();
+      isAutoplaying = true;
+      previouslyFocusedElement.focus(); // Return focus to the element that triggered the modal
+      // allow body to scroll
+      document.body.style.overflow = "auto";
+    }
   });
 
   closeButton.addEventListener("click", () => {
-    matchingModal.classList.add("hide");
+    matchingModal.classList.add("interactive_hide");
     isModalOpen = false;
     startAutoplay();
     isAutoplaying = true;
@@ -169,7 +176,7 @@ touchpoints.forEach((touchpoint, index) => {
   // Allow closing the modal with the Escape key
   matchingModal.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
-      matchingModal.classList.add("hide");
+      matchingModal.classList.add("interactive_hide");
       isModalOpen = false;
       startAutoplay();
       isAutoplaying = true;
