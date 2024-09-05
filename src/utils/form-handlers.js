@@ -182,6 +182,7 @@ function marketoSendToTrialPage(values, followUpUrl, $form) {
   return false;
 }
 function marketoDisplayThankYou(values, followUpUrl, $form) {
+  console.log({ values, followUpUrl, $form });
   let thankYouMessage = $form.data("thank-you-message");
   if (typeof thankYouMessage === "undefined") {
     thankYouMessage =
