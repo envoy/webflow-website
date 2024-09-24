@@ -231,11 +231,6 @@ textarea {
     margin-left: auto !important; /* keep! */
   }
 
-  .marketo-form.email-only.side-by-side .mktoFormRow input,
-  .marketo-form.landing-page-form .mktoFormRow input {
-    text-align: center;
-  }
-
   .marketo-form.email-only.side-by-side .mktoButtonRow,
   .marketo-form.landing-page-form .mktoButtonRow {
     margin-top: 8px !important;
