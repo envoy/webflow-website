@@ -165,7 +165,8 @@ input[type="email"],
 input[type="tel"],
 input[type="number"],
 input[type="date"],
-select {
+select,
+textarea {
   border: 1px solid #eee !important;
   border-radius: 4px !important;
   padding: 12px !important;
