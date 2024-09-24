@@ -267,3 +267,19 @@ select {
 .mktoForm.side-by-side .mktoFieldWrap {
   float: none !important;
 }
+
+.newsletter-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.newsletter-form .mktoFormRow .contains-email {
+  width: 100%;
+  margin-right: 0px;
+  margin-bottom: 10px;
+}
+
+.newsletter-form .mktoButtonRow .mktoButtonWrap,
+.newsletter-form .mktoButtonRow .mktoButtonWrap .mktoButton {
+  width: 100%;
+}
