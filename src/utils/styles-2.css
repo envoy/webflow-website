@@ -290,13 +290,18 @@
   width: auto !important;
 }
 
+.marketo-form.email-only.side-by-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .marketo-form.email-only.side-by-side .mktoFormRow,
 .contact-form.email-only.side-by-side .mktoFormRow {
-  width: 264px !important;
-  max-width: 100%;
+  /* width: 264px !important; */
+  width: 100%;
   display: block;
-  float: left;
-  clear: none;
   margin-right: 20px !important;
 }
 
@@ -327,13 +332,14 @@
 
 .marketo-form.email-only.side-by-side .mktoButtonRow,
 .contact-form.email-only.side-by-side .mktoButtonRow {
-  display: block;
-  float: left;
+  display: flex;
+  flex-direction: column;
   width: auto !important;
 }
 
 .marketo-form.email-only.side-by-side .mktoButtonRow .mktoButton,
 .contact-form.email-only.side-by-side .mktoButtonRow .mktoButton {
+  width: 100%;
   font-family: "Sofia Pro", helvetica neue, Helvetica, Arial, sans-serif !important;
   margin-top: 0 !important;
   font-size: 1rem !important;
@@ -546,9 +552,9 @@
   background-color: #e23c33 !important;
 }
 
-.marketo-form.mktoForm.email-only.side-by-side .mktoFormRow {
+/* .marketo-form.mktoForm.email-only.side-by-side .mktoFormRow {
   width: 231px !important;
-}
+} */
 
 .marketo-form.mktoForm.email-only.side-by-side .mktoFormRow input {
   font-family: "Sofia Pro", helvetica neue, Helvetica, Arial, sans-serif !important;
@@ -628,4 +634,19 @@
 .input[type="number"] {
   border: 2px solid #e9eaf2;
   min-height: 44px;
+}
+
+/* Later Styles */
+
+.footer-form {
+  flex-direction: row !important;
+  gap: 0px !important;
+}
+
+.footer-form .mktoButton {
+  white-space: nowrap;
+}
+
+.footer-form.marketo-form.email-only.side-by-side .mktoButtonRow {
+  margin-top: 0px;
 }
