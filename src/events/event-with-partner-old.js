@@ -1,11 +1,15 @@
 function initEventForm() {
   console.log("initEventForm");
   const partnerEl = document.querySelector("#isInterestedInPartner__c_0");
-  const bookMeetingEl = document.querySelector("#interestedinmeeting_0");
-  const happyHourEl = document.querySelector("#interestedinhappyhour_0");
+  const wasReferrredByPartnerEl = document.querySelector(
+    "#wasReferredbyaPartner_0"
+  );
+  // const bookMeetingEl = document.querySelector("#interestedinmeeting_0");
+  // const happyHourEl = document.querySelector("#interestedinhappyhour_0");
   partnerEl.addEventListener("change", updateUi);
-  bookMeetingEl.addEventListener("change", updateUi);
-  happyHourEl.addEventListener("change", updateUi);
+  wasReferrredByPartnerEl.addEventListener("change", updateUi);
+  // bookMeetingEl.addEventListener("change", updateUi);
+  // happyHourEl.addEventListener("change", updateUi);
 
   updateUi();
 }
