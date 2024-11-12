@@ -183,6 +183,15 @@ textarea {
   .contact-form .mktoFormRow .mktoRequiredField .mktoAsterix {
     float: right !important;
   }
+
+  .mktoForm .mktoRadioList,
+  .mktoForm .mktoCheckboxList {
+    width: 24px !important;
+  }
+
+  .mktoFormRow {
+    margin-top: 0.75rem !important;
+  }
 }
 
 /*** CUSTOM STYLES ***/
@@ -277,4 +286,18 @@ textarea {
 .newsletter-form .mktoButtonRow .mktoButtonWrap,
 .newsletter-form .mktoButtonRow .mktoButtonWrap .mktoButton {
   width: 100%;
+}
+
+.mktoLogicalField label {
+  display: none;
+}
+
+.marketo-events-form .mktoFormRow .mktoLogicalField > label {
+  display: none;
+}
+
+.marketo-events-form .mktoFormRow .mktoFieldWrap:has(.mktoLogicalField) {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
 }
