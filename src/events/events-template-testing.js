@@ -4,6 +4,7 @@
 
     // Intercept form submit
     form.addEventListener('submit', function (e) {
+      console.log("Form submitting");
       // Step 1: Checkbox logic
       const happyHour = form.querySelector('input[name="interestedinhappyhour"]');
       const bookMeeting = form.querySelector('input[name="interestedinmeeting"]');
