@@ -6,9 +6,9 @@
     
           console.log("Form submitting");
           // 1: Checkbox logic
-          const happyHour = form.querySelector('input[name="interestedinhappyhour"]');
-          const bookMeeting = form.querySelector('input[name="interestedinmeeting"]');
-          const partnerInterest = form.querySelector('input[name="isInterestedInPartner__c"]');
+          const happyHour = formEl.find('input[name="interestedinhappyhour"]')[0];
+          const bookMeeting = formEl.find('input[name="interestedinmeeting"]')[0];
+          const partnerInterest = formEl.find('input[name="isInterestedInPartner__c"]')[0];
     
           const hh = happyHour?.checked;
           const bm = bookMeeting?.checked;
