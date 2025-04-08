@@ -1,11 +1,10 @@
 
-  document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('marketo-form');
+  MktoForms2.whenReady(function(form) {
+    form.onSubmit(function() {
+      const formEl = form.getFormElem();
 
-    // Intercept form submit
-    form.addEventListener('submit', function (e) {
       console.log("Form submitting");
-      // Step 1: Checkbox logic
+      // 1: Checkbox logic
       const happyHour = form.querySelector('input[name="interestedinhappyhour"]');
       const bookMeeting = form.querySelector('input[name="interestedinmeeting"]');
       const partnerInterest = form.querySelector('input[name="isInterestedInPartner__c"]');
@@ -14,21 +13,23 @@
       const bm = bookMeeting?.checked;
       const pi = partnerInterest?.checked;
 
-      // Step 2: Set callback dynamically
+      let callbackName = 'handleDefault';
+
+      // 2: Set callback dynamically
       if (bm && pi && !hh) {
-        form.setAttribute('data-success-callback', 'handleBmAndPi');
+        callbackName = 'handleBmAndPi';
       } else if (bm && !hh && !pi) {
-        form.setAttribute('data-success-callback', 'handleBmOnly');
+        callbackName = 'handleBmOnly';
       } else if (hh && pi && !bm) {
-        form.setAttribute('data-success-callback', 'handleHh');
+        callbackName = 'handleHh';
       } else if (bm && hh && !bm) {
-        form.setAttribute('data-success-callback', 'handleBmAndHh');
+        callbackName = 'handleBmAndHh';
       } else if (hh && !bm && !pi) {
-        form.setAttribute('data-success-callback', 'handleHh');
-      } else {
-        // Covers none checked OR any other unmatched combo
-        form.setAttribute('data-success-callback', 'handleDefault');
-      }
+        callbackName ='handleHh';
+      } 
+
+      formEl.attr('data-success-callback', callbackName);
+
     });
   });
 
