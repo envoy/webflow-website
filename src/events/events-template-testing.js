@@ -1,37 +1,42 @@
-
-  MktoForms2.whenReady(function(form) {
-    form.onSubmit(function() {
-      const formEl = form.getFormElem();
-
-      console.log("Form submitting");
-      // 1: Checkbox logic
-      const happyHour = form.querySelector('input[name="interestedinhappyhour"]');
-      const bookMeeting = form.querySelector('input[name="interestedinmeeting"]');
-      const partnerInterest = form.querySelector('input[name="isInterestedInPartner__c"]');
-
-      const hh = happyHour?.checked;
-      const bm = bookMeeting?.checked;
-      const pi = partnerInterest?.checked;
-
-      let callbackName = 'handleDefault';
-
-      // 2: Set callback dynamically
-      if (bm && pi && !hh) {
-        callbackName = 'handleBmAndPi';
-      } else if (bm && !hh && !pi) {
-        callbackName = 'handleBmOnly';
-      } else if (hh && pi && !bm) {
-        callbackName = 'handleHh';
-      } else if (bm && hh && !bm) {
-        callbackName = 'handleBmAndHh';
-      } else if (hh && !bm && !pi) {
-        callbackName ='handleHh';
-      } 
-
-      formEl.attr('data-success-callback', callbackName);
-
-    });
-  });
+  window.onload = function () {
+    if (typeof MktoForms2 !== 'undefined' && MktoForms2.whenReady) {
+      MktoForms2.whenReady(function(form) {
+        form.onSubmit(function() {
+          const formEl = form.getFormElem();
+    
+          console.log("Form submitting");
+          // 1: Checkbox logic
+          const happyHour = form.querySelector('input[name="interestedinhappyhour"]');
+          const bookMeeting = form.querySelector('input[name="interestedinmeeting"]');
+          const partnerInterest = form.querySelector('input[name="isInterestedInPartner__c"]');
+    
+          const hh = happyHour?.checked;
+          const bm = bookMeeting?.checked;
+          const pi = partnerInterest?.checked;
+    
+          let callbackName = 'handleDefault';
+    
+          // 2: Set callback dynamically
+          if (bm && pi && !hh) {
+            callbackName = 'handleBmAndPi';
+          } else if (bm && !hh && !pi) {
+            callbackName = 'handleBmOnly';
+          } else if (hh && pi && !bm) {
+            callbackName = 'handleHh';
+          } else if (bm && hh && !bm) {
+            callbackName = 'handleBmAndHh';
+          } else if (hh && !bm && !pi) {
+            callbackName ='handleHh';
+          } 
+    
+          formEl.attr('data-success-callback', callbackName);
+    
+        });
+      });
+  } else {
+    console.warn('MktoForms2 is not available.');
+  }
+};
 
   // Callback functions
   function handleBmAndPi() {
