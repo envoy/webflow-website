@@ -7,28 +7,24 @@ document.querySelector("#apple-calendar").addEventListener("click", function(e) 
   const icsContent = `
 BEGIN:VCALENDAR
 VERSION:2.0
-CALSCALE:GREGORIAN
+PRODID:An evening at the Chef’s Table with Envoy
 BEGIN:VEVENT
-SUMMARY:Minus5 Ice Experience - Envoy Happy Hour
-DTSTART;TZID=America/Los_Angeles:20250401T170000
-DTEND;TZID=America/Los_Angeles:20250401T190000
-LOCATION:3377 S Las Vegas Blvd. STE 2140, Las Vegas, NV 89109
-DESCRIPTION:We’re hosting a happy hour at the Minus5 Ice Bar at The Venetian!\\n\\nCome cool off from the desert heat, enjoy free refreshments, and pick up some Envoy swag. Gloves and a coat will be provided—no need to bring your own!\\n\\nRSVP by March 31.
-STATUS:CONFIRMED
-SEQUENCE:0
-BEGIN:VALARM
-TRIGGER:-PT10M
-DESCRIPTION:Reminder
-ACTION:DISPLAY
-END:VALARM
+DTSTART:20250626T220000Z
+DTEND:20250627T010000Z
+DTSTAMP:20250507T181622Z
+SUMMARY:An evening at the Chef’s Table with Envoy
+DESCRIPTION:Join Envoy for a private dinner bringing together an exclusive group of workplace and security leaders for meaningful conversation, shared insights, and an exceptional culinary experience by Chef Leah Cohen.
+LOCATION:305 Bleecker Street - New York, NY 10014
+UID:84187
 END:VEVENT
-END:VCALENDAR`.trim();
+END:VCALENDAR
+`.trim();
 
   // Turn the ICS text into a downloadable file
   const blob = new Blob([icsContent], { type: "text/calendar" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = "envoy-isc-west-happy-hour.ics";
+  link.download = "envoy-q2fy26-nyc-dinner.ics";
 
   // Programmatically click the link to download
   document.body.appendChild(link);
