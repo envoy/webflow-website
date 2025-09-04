@@ -50,6 +50,7 @@ const FORM_ID_TYPE_MAP = {
   505: FORM_TYPES.GATED_ASSET,
   510: FORM_TYPES.GET_DEMO,
   521: FORM_TYPES.GATED_ASSET,
+  572: FORM_TYPES.GET_DEMO,
 };
 
 function loadMarketoForm(form) {
