@@ -25,6 +25,7 @@ const FORM_TYPES = {
   GET_DEMO: "get_demo",
   GET_QUOTE: "get_quote",
   GET_TRIAL: "get_trial",
+  GET_FOOTER_TRIAL: "get_footer_trial",
   CONTACT_US: "contact_us",
   GATED_ASSET: "gated_asset",
   EVENTS: "events",
@@ -35,7 +36,7 @@ const FORM_TYPES = {
 const FORM_ID_TYPE_MAP = {
   1: FORM_TYPES.NO_FORM_TYPE,
   3: FORM_TYPES.GATED_ASSET,
-  40: FORM_TYPES.GET_TRIAL,
+  40: FORM_TYPES.GET_FOOTER_TRIAL,
   95: FORM_TYPES.GATED_ASSET,
   123: FORM_TYPES.GATED_ASSET,
   223: FORM_TYPES.GATED_ASSET,
