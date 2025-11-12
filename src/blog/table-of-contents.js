@@ -1,10 +1,6 @@
-import gsap from "https://cdn.skypack.dev/gsap";
-import { ScrollTrigger } from "https://cdn.skypack.dev/gsap/ScrollTrigger";
-
 document.addEventListener("DOMContentLoaded", function () {
   // Handle window resize event
   window.addEventListener("resize", function () {
-    // Check if the viewport width is greater than 991px (desktop breakpoint)
     initializeTableOfContents();
   });
 
@@ -16,7 +12,6 @@ function initializeTableOfContents() {
     return;
   }
 
-  gsap.registerPlugin(ScrollTrigger);
   const headers = document.querySelectorAll(".text-rich-text h2");
   const tocContainer = document.querySelector(".dynamic-page-toc-container");
   const tocComponent = document.querySelector(".sidebar_toc_component");
@@ -45,7 +40,7 @@ function initializeTableOfContents() {
       .replace(/^-|-$/g, "");
 
     // Ensure the ID starts with a letter or underscore
-    let id = `section-${baseId}`; // Example prefix to ensure valid ID
+    let id = `section-${baseId}`;
     let count = 1;
 
     // Ensure the ID is unique
@@ -68,49 +63,56 @@ function initializeTableOfContents() {
 
     // Handle click event on TOC link
     link.addEventListener("click", function (event) {
-      event.preventDefault(); // Prevent default anchor behavior
-      scrollToHeader(id); // Scroll to the corresponding header
+      event.preventDefault();
+      scrollToHeader(id);
     });
   });
 
   // Set initial active link based on current scroll position
   updateActiveHeader();
 
+  // Add scroll listener to update active header
+  let scrollTimeout;
+  window.addEventListener("scroll", function() {
+    // Throttle scroll events for performance
+    if (scrollTimeout) {
+      window.cancelAnimationFrame(scrollTimeout);
+    }
+    scrollTimeout = window.requestAnimationFrame(function() {
+      updateActiveHeader();
+    });
+  }, { passive: true });
+
   // Function to scroll to a specific header by ID
   function scrollToHeader(id) {
     const header = document.getElementById(id);
     if (header) {
       header.scrollIntoView({ behavior: "smooth", block: "start" });
-
-      // Update active link in TOC
       updateActiveLink(id);
     }
   }
 
-  // Function to update active link in TOC based on current scroll position
+  // Function to update active link based on current scroll position
   function updateActiveHeader() {
     let currentActiveHeader = null;
+    let closestDistance = Infinity;
+
     headers.forEach(function (header) {
       const bounding = header.getBoundingClientRect();
-      if (
-        bounding.top <= 100 && // Adjust this value as needed
-        bounding.bottom >= 100 && // Adjust this value as needed
-        (currentActiveHeader === null ||
-          bounding.top < currentActiveHeader.getBoundingClientRect().top)
-      ) {
+      const distance = Math.abs(bounding.top - 100);
+
+      // Find the header closest to our target position (100px from top)
+      if (bounding.top <= 150 && distance < closestDistance) {
+        closestDistance = distance;
         currentActiveHeader = header;
       }
     });
 
     if (currentActiveHeader) {
-      const id = currentActiveHeader.id;
-      updateActiveLink(id);
-    } else {
-      // If no headers are active, set the first link as active
-      if (headers.length > 0 && window.scrollY < 100) {
-        const firstHeaderId = headers[0].id;
-        updateActiveLink(firstHeaderId);
-      }
+      updateActiveLink(currentActiveHeader.id);
+    } else if (headers.length > 0 && window.scrollY < 100) {
+      // If near top of page, activate first header
+      updateActiveLink(headers[0].id);
     }
   }
 
@@ -125,20 +127,6 @@ function initializeTableOfContents() {
       currentLink.classList.add("active");
     }
   }
-
-  // Add ScrollTrigger to monitor visibility and update active link
-  headers.forEach(function (header) {
-    ScrollTrigger.create({
-      trigger: header,
-      start: "top 20%", // Adjust start position as needed
-      end: "bottom top", // Adjust end position as needed
-      onToggle: (self) => {
-        if (self.isActive) {
-          updateActiveLink(header.id);
-        }
-      },
-    });
-  });
 
   if (headers.length > 0) {
     tocComponent.style.display = "block";
