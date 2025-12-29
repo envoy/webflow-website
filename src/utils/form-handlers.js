@@ -391,3 +391,82 @@ function successRedirect(values, followUpUrl, $form) {
   location.href = $form.data("redirect-url");
   return false;
 }
+
+window.initIntlPhonePicker = function($form){
+  // $form is jQuery object passed from formhandler.js
+  const formEl = $form && $form[0];
+  if (!formEl || formEl.__intlPhoneInit) return;
+  // Wait for the *specific* Mkto form instance that matches this DOM node
+  if (window.MktoForms2 && MktoForms2.whenReady) {
+    MktoForms2.whenReady(function(form){
+      const el = form.getFormElem()[0];
+      if (el !== formEl) return;               // <- scoping guard
+      if (el.__intlPhoneInit) return;
+      el.__intlPhoneInit = true;
+      const FIELD_NAME = 'Phone';
+      const mktoPhone = el.querySelector('input[name="'+FIELD_NAME+'"]');
+      if (!mktoPhone) return;
+      // Ensure visible tel input
+      let visible = el.querySelector('.int-phone');
+      if (!visible){
+        visible = document.createElement('input');
+        visible.type = 'tel';
+        visible.className = 'int-phone';
+        visible.placeholder = 'Your number here';
+        visible.autocomplete = 'tel';
+        mktoPhone.parentNode.insertBefore(visible, mktoPhone);
+      }
+      mktoPhone.style.display = 'none';
+      // Ensure hidden fields exist in DOM
+      function ensureHidden(name){
+        let f = el.querySelector('[name="'+name+'"]');
+        if (!f){
+          f = document.createElement('input');
+          f.type = 'hidden';
+          f.name = name;
+          el.appendChild(f);
+        }
+        return f;
+      }
+      // ISO2 and full country name
+      const domIso2 = ensureHidden('Country');
+      const domFull = ensureHidden('formCountry');
+      // Ensure Marketo model knows about them (helps if fields aren't in form UI)
+      if (form.addHiddenFields) {
+        form.addHiddenFields({ Country:'', formCountry:'' });
+      }
+      if (!window.intlTelInput) {
+        console.warn('intlTelInput is not loaded');
+        return;
+      }
+      const iti = window.intlTelInput(visible, {
+        initialCountry: "us",
+        separateDialCode: true,
+        preferredCountries: ["US","GB","CA"],
+        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js"
+      });
+      function sync(){
+        // Don't call setNumber on every keystroke; it can be jumpy.
+        const d = iti.getSelectedCountryData() || {};
+        const full = d.name || '';
+        const iso2 = (d.iso2 || '').toUpperCase();
+        const e164 = iti.getNumber() || '';
+        mktoPhone.value = e164;
+        domIso2.value = iso2;
+        domFull.value = full;
+        if (form.vals) {
+          const v = {};
+          v[FIELD_NAME] = e164;
+          v.Country = iso2;
+          v.formCountry = full;
+          form.vals(v);
+        }
+      }
+      visible.addEventListener('input', sync);
+      visible.addEventListener('change', sync);
+      visible.addEventListener('countrychange', sync);
+      if (form.onSubmit) form.onSubmit(sync);
+      sync();
+    });
+  }
+};
