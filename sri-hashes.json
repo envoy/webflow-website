@@ -1,0 +1,66 @@
+{
+  "version": "59",
+  "generated": "2026-01-20T22:50:26.559Z",
+  "hashes": [
+    {
+      "file": "src/blog/table-of-contents.js",
+      "url": "https://cdn.jsdelivr.net/gh/envoy/webflow-website@59/src/blog/table-of-contents.js",
+      "integrity": "sha384-6ziGuVQEc5eqXYRwxpPVujxpYBBdJ8bFQWQFsRD7yOVGK/crqaXw9+OqWyQtBkC4"
+    },
+    {
+      "file": "src/events/event-with-partner-old.js",
+      "url": "https://cdn.jsdelivr.net/gh/envoy/webflow-website@59/src/events/event-with-partner-old.js",
+      "integrity": "sha384-YaBHnWPYOlBr3ViM4hS114M+xB+HdmW73xXqnEyKuGfWUHVq2yFsCYyNaE1R7KmJ"
+    },
+    {
+      "file": "src/events/events-template-testing.js",
+      "url": "https://cdn.jsdelivr.net/gh/envoy/webflow-website@59/src/events/events-template-testing.js",
+      "integrity": "sha384-iZ8/+tx/vByOBP2VShicLpzH0dktJyYMlnFyLghkeKbhiVuBzvVAfiy4srV9kxnh"
+    },
+    {
+      "file": "src/events/events-template.js",
+      "url": "https://cdn.jsdelivr.net/gh/envoy/webflow-website@59/src/events/events-template.js",
+      "integrity": "sha384-KwT95U/0Nwu9DB+yvGpDvpB+TCk6g9SIuSxXKjQ96hCOnG4WdbYVPHOdmDY/kx8u"
+    },
+    {
+      "file": "src/events/generic-event.js",
+      "url": "https://cdn.jsdelivr.net/gh/envoy/webflow-website@59/src/events/generic-event.js",
+      "integrity": "sha384-BmhadvoqPP4j0joi4JT5WrB6W51OuHEte2acrMfJRV8b9RX/vKyxTnzzki3lBcce"
+    },
+    {
+      "file": "src/thanks/events.js",
+      "url": "https://cdn.jsdelivr.net/gh/envoy/webflow-website@59/src/thanks/events.js",
+      "integrity": "sha384-B3U9BVyf7JphmQVCfpSxes4LbipfBhEMQYrr8pc8g7Chgfu1x3liqv92HoOlrZS6"
+    },
+    {
+      "file": "src/utils/form-handlers.js",
+      "url": "https://cdn.jsdelivr.net/gh/envoy/webflow-website@59/src/utils/form-handlers.js",
+      "integrity": "sha384-6Vy4eUTu94zY4tZ9vzvA+yoBBwm25j9QS0YO37GtFp51R5bxvHQdpC9jkr6l5r4D"
+    },
+    {
+      "file": "src/utils/intl-phone-init.js",
+      "url": "https://cdn.jsdelivr.net/gh/envoy/webflow-website@59/src/utils/intl-phone-init.js",
+      "integrity": "sha384-VKQHOYF2pq9U4cEXQhH0OYKReIgxZFt1W47PZqoy4YKyQRtOMx+8CPKUoqc8bDyU"
+    },
+    {
+      "file": "src/utils/styles-backup.css",
+      "url": "https://cdn.jsdelivr.net/gh/envoy/webflow-website@59/src/utils/styles-backup.css",
+      "integrity": "sha384-YBxLIRjBDap890c8s21aXn6kZX5eBN7vKGwslzpj7htC2itjhwE6y5mki19hAYjp"
+    },
+    {
+      "file": "src/utils/styles.css",
+      "url": "https://cdn.jsdelivr.net/gh/envoy/webflow-website@59/src/utils/styles.css",
+      "integrity": "sha384-+zSLsTCcmpztmBtltI+aJEXsFRNfhVTBISMAUa7NKDnBQwbEJoBqQu4eWUL6v61v"
+    },
+    {
+      "file": "src/vfd/calculator.js",
+      "url": "https://cdn.jsdelivr.net/gh/envoy/webflow-website@59/src/vfd/calculator.js",
+      "integrity": "sha384-FSmReyv1tqgBXhTVTFRudkYzEc3bhTeZ1G58wPklaYvk69EPTBm/AEgOpfVVPj27"
+    },
+    {
+      "file": "src/workplace-challenges-and-solutions/interactive-graphic.js",
+      "url": "https://cdn.jsdelivr.net/gh/envoy/webflow-website@59/src/workplace-challenges-and-solutions/interactive-graphic.js",
+      "integrity": "sha384-233p0HxdyjYz1Y5HjBt7+2PFIiac5RGGkxVpFikOBiOz5kb6UilzVDxJBW1cm0Aj"
+    }
+  ]
+}
