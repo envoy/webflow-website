@@ -1,0 +1,12 @@
+# SRI hash generation output
+sri-hashes-output.txt
+
+# Node modules if anyone runs this locally
+node_modules/
+
+# macOS
+.DS_Store
+
+# Editor directories
+.vscode/
+.idea/
