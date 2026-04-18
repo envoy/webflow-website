@@ -21,7 +21,6 @@
     var visible = document.createElement('input');
     visible.type = 'tel';
     visible.className = 'int-phone';
-    visible.placeholder = 'Your number here';
     visible.autocomplete = 'tel';
     mktoPhone.parentNode.insertBefore(visible, mktoPhone);
     mktoPhone.style.display = 'none';
