@@ -125,9 +125,36 @@ function initializeTableOfContents() {
     const currentLink = tocContainer.querySelector(`a[href="#${id}"]`);
     if (currentLink) {
       currentLink.classList.add("active");
+      scrollActiveLinkIntoView(currentLink);
     }
   }
 
+  function scrollActiveLinkIntoView(link) {
+    const scroller = getScrollParent(link);
+    if (!scroller) return; // no scrollable ancestor → nothing to do
+    const pad = 8;
+    const linkRect = link.getBoundingClientRect();
+    const boxRect = scroller.getBoundingClientRect();
+
+    if (linkRect.top < boxRect.top + pad) {
+      scroller.scrollTop -= (boxRect.top + pad) - linkRect.top;
+    } else if (linkRect.bottom > boxRect.bottom - pad) {
+      scroller.scrollTop += linkRect.bottom - (boxRect.bottom - pad);
+    }
+  }
+
+  function getScrollParent(el) {
+    let node = el.parentElement;
+    while (node && node !== document.body) {
+      const oy = getComputedStyle(node).overflowY;
+      if ((oy === "auto" || oy === "scroll") && node.scrollHeight > node.clientHeight) {
+        return node;
+      }
+      node = node.parentElement;
+    }
+    return null;
+  }
+  
   if (headers.length > 0) {
     tocComponent.style.display = "block";
   }
