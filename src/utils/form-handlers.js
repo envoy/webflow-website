@@ -185,6 +185,11 @@ function marketoSendToTrialPage(values, followUpUrl, $form) {
   // Return false to prevent the submission handler continuing with its own processing
   return false;
 }
+function marketoSendToDemoPage(values, followUpUrl, $form) {
+  const email = values.Email;
+  location.href = "/demo?email=" + encodeURIComponent(email);
+  return false;
+}
 function marketoDisplayThankYou(values, followUpUrl, $form) {
   let thankYouMessage = $form.data("thank-you-message");
   if (typeof thankYouMessage === "undefined") {
