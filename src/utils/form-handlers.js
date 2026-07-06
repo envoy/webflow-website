@@ -109,17 +109,25 @@ function loadMarketoForm(form) {
           }
           const submitCallbackName = $form.data("submit-callback");
           form.onSubmit(function (form) {
+            const vals = form.vals();
+            const phoneNumber = marketoFormatPhoneE164(vals.Phone);
             window.analytics &&
               analytics.track("Form Filled", {
                 formID: formId,
                 form_type: FORM_ID_TYPE_MAP[formId] || FORM_TYPES.NO_FORM_TYPE,
-                emailAddress: form.vals().Email,
+                emailAddress: vals.Email,
+                phoneNumber: phoneNumber,
               });
             window.dataLayer.push({
               event: EVENT_NAME,
               formID: formId,
               form_type: FORM_ID_TYPE_MAP[formId] || FORM_TYPES.NO_FORM_TYPE,
-              emailAddress: form.vals().Email,
+              emailAddress: vals.Email,
+              phoneNumber: phoneNumber,
+              user_data: {
+                email: vals.Email,
+                phone_number: phoneNumber,
+              },
             });
             if (submitCallbackName) {
               return window[submitCallbackName](form);
@@ -202,6 +210,27 @@ function marketoDisplayThankYou(values, followUpUrl, $form) {
     750
   );
   return false;
+}
+
+// Google requires phone numbers in E.164 format: a plus sign (+) prefix and
+// country code with no dashes, parentheses, or spaces, e.g. +11231234567.
+// Forms using the intl-tel-input widget (intl-phone-init.js) already store the
+// Phone field in E.164; this normalizes values from forms that don't.
+// Returns "" when there is no phone value or it can't be normalized.
+function marketoFormatPhoneE164(phone) {
+  if (!phone) return "";
+  const raw = String(phone).trim();
+  const digits = raw.replace(/\D/g, "");
+  let candidate = "";
+  if (raw.charAt(0) === "+") {
+    candidate = "+" + digits;
+  } else if (digits.length === 10) {
+    // No country code provided; assume US/Canada
+    candidate = "+1" + digits;
+  } else if (digits.length >= 11 && digits.length <= 15) {
+    candidate = "+" + digits;
+  }
+  return /^\+[1-9]\d{6,14}$/.test(candidate) ? candidate : "";
 }
 
 function marketoGetQueryParameter(sParam) {
