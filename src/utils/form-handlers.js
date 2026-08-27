@@ -21,6 +21,7 @@ let marketoFormLoading = false;
 
 // EVENT NAMING
 const EVENT_NAME = "generate_lead";
+const BIZIBLE_COOKIE_NAME = "_biz_uid";
 const FORM_TYPES = {
   GET_DEMO: "get_demo",
   GET_QUOTE: "get_quote",
@@ -55,6 +56,12 @@ const FORM_ID_TYPE_MAP = {
   915: FORM_TYPES.CONTACT_US,
   1201: FORM_TYPES.GET_QUOTE,
 };
+
+function hasCookie(cookieName) {
+  return document.cookie
+    .split(";")
+    .some((cookie) => cookie.trim().startsWith(cookieName + "="));
+}
 
 function loadMarketoForm(form) {
   return new Promise((resolve, reject) => {
@@ -111,6 +118,7 @@ function loadMarketoForm(form) {
           form.onSubmit(function (form) {
             const vals = form.vals();
             const phoneNumber = marketoFormatPhoneE164(vals.Phone);
+            const bizibleCookieMissing = !hasCookie(BIZIBLE_COOKIE_NAME);
             window.analytics &&
               analytics.track("Form Filled", {
                 formID: formId,
@@ -124,6 +132,7 @@ function loadMarketoForm(form) {
               form_type: FORM_ID_TYPE_MAP[formId] || FORM_TYPES.NO_FORM_TYPE,
               emailAddress: vals.Email,
               phoneNumber: phoneNumber,
+              bizible_cookie_missing: bizibleCookieMissing,
               user_data: {
                 email: vals.Email,
                 phone_number: phoneNumber,
