@@ -332,10 +332,6 @@ function submitAndChilipiper_316(values, followUpUrl, $form) {
 }
 
 function ebookSuccess(values, followUpUrl, $form) {
-  if (typeof fbq !== "undefined") {
-    const track_name = $form.data("track");
-    fbq("track", track_name);
-  }
   const redirect_url = $form.data("redirect-url");
   location.href = redirect_url;
 
@@ -370,24 +366,12 @@ function submitAndRedirectToDemo(values, followUpUrl, $form) {
 }
 
 function fowFormSuccess(values, followUpUrl, $form) {
-  $form.append(
-    '<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=108645&conversionId=1904772&fmt=gif" />'
-  );
-
   marketoDisplayThankYou(values, followUpUrl, $form);
 
   return false;
 }
 
 function webinarFormSuccess(values, followUpUrl, $form) {
-  if (typeof fbq !== "undefined") {
-    fbq("track", "InitiateCheckout");
-  }
-
-  $form.append(
-    '<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=108645&conversionId=1904348&fmt=gif" />'
-  );
-
   location.href = "/pages/leaders-of-the-workplace-webinar-video/";
 
   return false;
