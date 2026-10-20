@@ -56,6 +56,56 @@ const FORM_ID_TYPE_MAP = {
   915: FORM_TYPES.CONTACT_US,
   1201: FORM_TYPES.GET_QUOTE,
 };
+const ATTRIBUTION_FIELD_MAP = {
+  // First touch (unprefixed cookies, legacy) — confirmed on form 572
+  utm_source__c: "utm_source",
+  utm_medium__c: "utm_medium",
+  utm_campaign__c: "utm_campaign",
+  utm_content__c: "utm_content",
+  utm_term__c: "utm_term",
+  UTM_Campaign_Type__c: "utm_campaigntype",
+  UTM_Content_Type__c: "utm_contenttype",
+  GCLID__c: "gclid",
+  ft_referrer__c: "referrer", // Marketo autofill reads "ft_referrer", which is never written
+  // First touch — NEW
+  msclkid__c: "msclkid",
+  landing_page__c: "landing_page",
+  // Last touch — confirmed on form 572
+  lt_referrer__c: "lt_referrer",
+  // Last touch — NEW
+  lt_utm_source__c: "lt_utm_source",
+  lt_utm_medium__c: "lt_utm_medium",
+  lt_utm_campaign__c: "lt_utm_campaign",
+  lt_utm_content__c: "lt_utm_content",
+  lt_utm_term__c: "lt_utm_term",
+  lt_UTM_Campaign_Type__c: "lt_utm_campaigntype",
+  lt_UTM_Content_Type__c: "lt_utm_contenttype",
+  lt_GCLID__c: "lt_gclid",
+  lt_msclkid__c: "lt_msclkid",
+  lt_landing_page__c: "lt_landing_page",
+};
+ 
+// Read at submit time, so consent given after the form loaded still counts.
+// Every mapped field is sent: the cookie value with marketing consent, otherwise "".
+// That keeps stale hidden-field values out of the submission. Preserving older
+// values on the person record is Marketo's job (field blocking / update rules).
+function getAttributionFields() {
+  const fields = {};
+  const accepted = !!(
+    window.Cookiebot &&
+    window.Cookiebot.consent &&
+    window.Cookiebot.consent.marketing
+  );
+ 
+  Object.keys(ATTRIBUTION_FIELD_MAP).forEach((marketoField) => {
+    fields[marketoField] =
+      accepted && window.Cookies
+        ? window.Cookies.get(ATTRIBUTION_FIELD_MAP[marketoField]) || ""
+        : "";
+  });
+ 
+  return fields;
+}
 
 function hasCookie(cookieName) {
   return document.cookie
@@ -116,6 +166,7 @@ function loadMarketoForm(form) {
           }
           const submitCallbackName = $form.data("submit-callback");
           form.onSubmit(function (form) {
+            form.addHiddenFields(getAttributionFields());
             const vals = form.vals();
             const phoneNumber = marketoFormatPhoneE164(vals.Phone);
             const bizibleCookieMissing = !hasCookie(BIZIBLE_COOKIE_NAME);
