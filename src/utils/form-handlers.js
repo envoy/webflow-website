@@ -84,11 +84,18 @@ const ATTRIBUTION_FIELD_MAP = {
   lt_msclkid__c: "lt_msclkid",
   lt_landing_page__c: "lt_landing_page",
 };
- 
+// Forms that never get attribution fields (1 = unsubscribe)
+const ATTRIBUTION_EXCLUDED_FORM_IDS = [1];
+// Sent for the empty fields of a recorded touch, so Marketo replaces values
+// from an older visit instead of keeping them (Marketo ignores blanks).
+const EMPTY_TOUCH_VALUE = "(none)";
+
 // Read at submit time, so consent given after the form loaded still counts.
-// Every mapped field is sent: the cookie value with marketing consent, otherwise "".
-// That keeps stale hidden-field values out of the submission. Preserving older
-// values on the person record is Marketo's job (field blocking / update rules).
+// Without marketing consent, every mapped field is sent as "".
+// With consent, each touch (first and last) is sent as a complete set: if the
+// touch has any value, its empty fields are sent as EMPTY_TOUCH_VALUE. A touch
+// with no values at all is sent blank. Preserving first touch on the person
+// record is Marketo's job (write-once / update blocking).
 function getAttributionFields() {
   const fields = {};
   const accepted = !!(
@@ -96,15 +103,43 @@ function getAttributionFields() {
     window.Cookiebot.consent &&
     window.Cookiebot.consent.marketing
   );
- 
+
   Object.keys(ATTRIBUTION_FIELD_MAP).forEach((marketoField) => {
     fields[marketoField] =
       accepted && window.Cookies
         ? window.Cookies.get(ATTRIBUTION_FIELD_MAP[marketoField]) || ""
         : "";
   });
- 
+
+  const isLastTouch = (marketoField) =>
+    ATTRIBUTION_FIELD_MAP[marketoField].indexOf("lt_") === 0;
+
+  [true, false].forEach((lastTouch) => {
+    const touchFields = Object.keys(fields).filter(
+      (marketoField) => isLastTouch(marketoField) === lastTouch
+    );
+    if (touchFields.some((marketoField) => fields[marketoField])) {
+      touchFields.forEach((marketoField) => {
+        if (!fields[marketoField]) fields[marketoField] = EMPTY_TOUCH_VALUE;
+      });
+    }
+  });
+
   return fields;
+}
+
+// Unique ID for each lead event, used to deduplicate the same conversion
+// across tags/platforms (e.g. browser and server-side events).
+function generateEventId() {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") {
+    return window.crypto.randomUUID();
+  }
+  return (
+    Date.now().toString(36) +
+    "-" +
+    Math.random().toString(36).slice(2, 12) +
+    Math.random().toString(36).slice(2, 12)
+  );
 }
 
 function hasCookie(cookieName) {
@@ -166,10 +201,13 @@ function loadMarketoForm(form) {
           }
           const submitCallbackName = $form.data("submit-callback");
           form.onSubmit(function (form) {
-            form.addHiddenFields(getAttributionFields());
+            if (ATTRIBUTION_EXCLUDED_FORM_IDS.indexOf(Number(formId)) === -1) {
+              form.addHiddenFields(getAttributionFields());
+            }
             const vals = form.vals();
             const phoneNumber = marketoFormatPhoneE164(vals.Phone);
             const bizibleCookieMissing = !hasCookie(BIZIBLE_COOKIE_NAME);
+            const eventId = generateEventId();
             window.analytics &&
               analytics.track("Form Filled", {
                 formID: formId,
@@ -179,6 +217,7 @@ function loadMarketoForm(form) {
               });
             window.dataLayer.push({
               event: EVENT_NAME,
+              event_id: eventId,
               formID: formId,
               form_type: FORM_ID_TYPE_MAP[formId] || FORM_TYPES.NO_FORM_TYPE,
               emailAddress: vals.Email,
